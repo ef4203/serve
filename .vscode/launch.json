@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [{
+        "type": "gdb",
+        "request": "launch",
+        "name": "Debug Program",
+        "cwd": "${workspaceRoot}",
+        "preLaunchTask": "Build",
+        "target": "./bin/clyth",
+        "valuesFormatting": "prettyPrinters"
+    }]
+}

@@ -5,7 +5,7 @@
 typedef char *string;
 
 /* Append SRC onto DEST, using reallocation. */
-int strapp(char **__dest, char *__src)
+int strapp(char **__dest, const char *__src)
 {
     string __new = (char *)malloc(
         (strlen(*__dest) + strlen(__src)) * sizeof(char) + 1);

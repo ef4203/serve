@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-/* Functions to make working with strings more sane. */
+/* Extending functionality of the string.h standard library. */
 
 #include <stdlib.h>
 #include <string.h>

@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
 
-/* Functions to make working with strings more sane. */
+/* Extending functionality of the string.h standard library. */
 
-#ifndef STRING_EX_H
-#define STRING_EX_H
+#ifndef STDEX_STRING_H
+#define STDEX_STRING_H
+
+#include <string.h>
 
 /* Define the string keyword. */
 typedef char *string;
@@ -14,4 +16,4 @@ extern string strapp(char **__dest, const char *__src);
 /* Create a new dynamic string. */
 extern string strnew();
 
-#endif /* STRING_EX_H */
+#endif /* STDEX_STRING_H */

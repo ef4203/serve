@@ -5,9 +5,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <string.h>
 
-#include "string_ex.h"
+#include <stdex/string.h>
 
 int main()
 {

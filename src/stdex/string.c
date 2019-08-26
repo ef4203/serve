@@ -35,7 +35,8 @@ char *strnew()
     return __new;
 }
 
-int prefix(const char *__pre, const char *__str)
+/* Check whether the PRE is a prefix of STR. */
+int strprefix(const char *__pre, const char *__str)
 {
     return strncmp(__pre, __str, strlen(__pre)) == 0;
 }

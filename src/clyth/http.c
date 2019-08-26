@@ -1,24 +1,26 @@
 // SPDX-License-Identifier: MIT
 
+/* Provides functions for working with the HTTP standard. */
+
 #include <stdio.h>
 #include <stdex/string.h>
 #include <clyth/http.h>
 
 HTTPMETHOD __parse_http_method(const char *__request)
 {
-    if (prefix("GET", __request))
+    if (strprefix("GET", __request))
         return GET;
-    if (prefix("HEAD", __request))
+    if (strprefix("HEAD", __request))
         return HEAD;
-    if (prefix("POST", __request))
+    if (strprefix("POST", __request))
         return POST;
-    if (prefix("PUT", __request))
+    if (strprefix("PUT", __request))
         return PUT;
-    if (prefix("DELETE", __request))
+    if (strprefix("DELETE", __request))
         return DELETE;
-    if (prefix("TRACE", __request))
+    if (strprefix("TRACE", __request))
         return TRACE;
-    if (prefix("CONNECT", __request))
+    if (strprefix("CONNECT", __request))
         return CONNECT;
 
     fprintf(stderr, "Could not understand HTTP method");

@@ -13,6 +13,7 @@ extern char *strapp(char **__dest, const char *__src);
 /* Create a new dynamic string. */
 extern char *strnew();
 
-extern int prefix(const char *__pre, const char *__str);
+/* Check whether the PRE is a prefix of STR. */
+extern int strprefix(const char *__pre, const char *__str);
 
 #endif /* STDEX_STRING_H */

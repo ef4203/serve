@@ -6,6 +6,6 @@
 #define STDEX_INT_H
 
 /* Convert an integer to string. */
-char *itostr(const int __i);
+extern char *itostr(const int __i);
 
 #endif /* STDEX_INT_H */

@@ -30,7 +30,7 @@ int main()
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(8084);
+    address.sin_port = htons(8080);
 
     if (bind(create_socket, (struct sockaddr *)&address, sizeof(address)))
     {
@@ -81,7 +81,6 @@ int main()
                 strapp(&contentHeader, "\n");
 
                 write(new_socket, "HTTP/1.1 404 Not Found\n", 23);
-                write(new_socket, "Content-Type: text/html\n\n", 25);
                 write(new_socket, "Content-Type: text/html\n\n", 25);
                 write(new_socket, result, strlen(result));
 

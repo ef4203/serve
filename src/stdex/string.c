@@ -5,13 +5,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Define the string keyword. */
-typedef char *string;
-
 /* Append SRC onto DEST, using reallocation. */
-string strapp(char **__dest, const char *__src)
+char *strapp(char **__dest, const char *__src)
 {
-    string __new = (char *)malloc(
+    char *__new = (char *)malloc(
         (strlen(*__dest) + strlen(__src)) * sizeof(char) + 1);
 
     if (!__new)
@@ -26,9 +23,9 @@ string strapp(char **__dest, const char *__src)
 }
 
 /* Create a new dynamic string. */
-string strnew()
+char *strnew()
 {
-    string __new = (char *)malloc(sizeof(char));
+    char *__new = (char *)malloc(sizeof(char));
 
     if (!__new)
         return NULL; /* Memory allocation failed. */
@@ -36,4 +33,9 @@ string strnew()
     memset(__new, 0, 1);
 
     return __new;
+}
+
+int prefix(const char *__pre, const char *__str)
+{
+    return strncmp(__pre, __str, strlen(__pre)) == 0;
 }

@@ -1,12 +1,11 @@
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
 
 #include <stdex/string.h>
+#include <stdex/int.h>
+#include <clyth/http.h>
 
 int main()
 {
@@ -14,7 +13,7 @@ int main()
     socklen_t addrlen;
     int opt = 1;
     int bufsize = 1024;
-    string buffer = malloc(bufsize);
+    char *request = malloc(bufsize);
     struct sockaddr_in address;
 
     if (!(create_socket = socket(AF_INET, SOCK_STREAM, 0)))
@@ -31,7 +30,7 @@ int main()
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(8080);
+    address.sin_port = htons(8084);
 
     if (bind(create_socket, (struct sockaddr *)&address, sizeof(address)))
     {
@@ -54,48 +53,78 @@ int main()
             exit(EXIT_FAILURE);
         }
 
-        recv(new_socket, buffer, bufsize, 0);
+        recv(new_socket, request, bufsize, 0);
 
-        // printf("%s\n", buffer);
+        HTTPREQ req = http_parse_request(request);
+        // Debug things
+        printf("Http method %d\n", req.method);
+        printf("On url: %s\n", req.url);
 
-        char buf[128];
-        string result = strnew();
-        FILE *fp;
-        if ((fp = popen("sh -c www/index.sh", "r")) == NULL)
+        switch (req.method)
         {
-            printf("Error opening pipe!\n");
-        }
+        case GET:;
+            char *path = strnew();
+            strapp(&path, "www");
+            strapp(&path, req.url);
+            char buf[128];
+            char *result = strnew();
+            FILE *fp;
+            if ((fp = fopen(path, "r")) == NULL)
+            {
+                strapp(&result, "404: Not Found");
 
-        while (fgets(buf, 128, fp) != NULL)
-        {
-            strapp(&result, buf);
-        }
+                char *contentLen = itostr(strlen(result));
 
-        char contentLen[12];
-        sprintf(contentLen, "%d", (int)strlen(result));
+                char *contentHeader = strnew();
+                strapp(&contentHeader, "Content-length: ");
+                strapp(&contentHeader, contentLen);
+                strapp(&contentHeader, "\n");
 
-        string contentHeader = strnew();
-        strapp(&contentHeader, "Content-length: ");
-        strapp(&contentHeader, contentLen);
-        strapp(&contentHeader, "\n");
+                write(new_socket, "HTTP/1.1 404 Not Found\n", 23);
+                write(new_socket, "Content-Type: text/html\n\n", 25);
+                write(new_socket, "Content-Type: text/html\n\n", 25);
+                write(new_socket, result, strlen(result));
 
-        write(new_socket, "HTTP/1.1 200 OK\n", 16);
-        write(new_socket, contentHeader, strlen(contentHeader));
-        write(new_socket, "Content-Type: text/html\n\n", 25);
-        write(new_socket, result, strlen(result));
+                free(result);
+                free(contentHeader);
+            }
+            else
+            {
+                while (fgets(buf, 128, fp) != NULL)
+                {
+                    strapp(&result, buf);
+                }
 
-        free(result);
-        free(contentHeader);
+                char *contentLen = itostr(strlen(result));
 
-        if (pclose(fp))
-        {
-            printf("Command not found or exited with error status\n");
+                char *contentHeader = strnew();
+                strapp(&contentHeader, "Content-length: ");
+                strapp(&contentHeader, contentLen);
+                strapp(&contentHeader, "\n");
+
+                write(new_socket, "HTTP/1.1 200 OK\n", 16);
+                write(new_socket, contentHeader, strlen(contentHeader));
+                write(new_socket, "Content-Type: text/html\n\n", 25);
+                write(new_socket, result, strlen(result));
+
+                free(result);
+                free(contentHeader);
+
+                if (fclose(fp))
+                {
+                    printf("Command not found or exited with error status\n");
+                }
+            }
+            free(path);
+            break;
+        default:
+            break;
         }
 
         close(new_socket);
     }
 
-    free(buffer);
+    free(request);
     close(create_socket);
 
     return EXIT_SUCCESS;

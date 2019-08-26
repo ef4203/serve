@@ -7,13 +7,12 @@
 
 #include <string.h>
 
-/* Define the string keyword. */
-typedef char *string;
-
 /* Append SRC onto DEST, using reallocation. */
-extern string strapp(char **__dest, const char *__src);
+extern char *strapp(char **__dest, const char *__src);
 
 /* Create a new dynamic string. */
-extern string strnew();
+extern char *strnew();
+
+extern int prefix(const char *__pre, const char *__str);
 
 #endif /* STDEX_STRING_H */

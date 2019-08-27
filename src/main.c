@@ -56,9 +56,6 @@ int main()
         recv(new_socket, request, bufsize, 0);
 
         HTTPREQ req = http_parse_request(request);
-        // Debug things
-        printf("Http method %d\n", req.method);
-        printf("On url: %s\n", req.url);
 
         switch (req.method)
         {
@@ -66,54 +63,7 @@ int main()
             char *path = strnew();
             strapp(&path, "www");
             strapp(&path, req.url);
-            char buf[128];
-            char *result = strnew();
-            FILE *fp;
-            if ((fp = fopen(path, "r")) == NULL)
-            {
-                strapp(&result, "404: Not Found");
-
-                char *contentLen = itostr(strlen(result));
-
-                char *contentHeader = strnew();
-                strapp(&contentHeader, "Content-length: ");
-                strapp(&contentHeader, contentLen);
-                strapp(&contentHeader, "\n");
-
-                write(new_socket, "HTTP/1.1 404 Not Found\n", 23);
-                write(new_socket, "Content-Type: text/html\n\n", 25);
-                write(new_socket, result, strlen(result));
-
-                free(result);
-                free(contentHeader);
-            }
-            else
-            {
-                while (fgets(buf, 128, fp) != NULL)
-                {
-                    strapp(&result, buf);
-                }
-
-                char *contentLen = itostr(strlen(result));
-
-                char *contentHeader = strnew();
-                strapp(&contentHeader, "Content-length: ");
-                strapp(&contentHeader, contentLen);
-                strapp(&contentHeader, "\n");
-
-                write(new_socket, "HTTP/1.1 200 OK\n", 16);
-                write(new_socket, contentHeader, strlen(contentHeader));
-                write(new_socket, "Content-Type: text/html\n\n", 25);
-                write(new_socket, result, strlen(result));
-
-                free(result);
-                free(contentHeader);
-
-                if (fclose(fp))
-                {
-                    printf("Command not found or exited with error status\n");
-                }
-            }
+            serve_files(new_socket, path);
             free(path);
             break;
         default:

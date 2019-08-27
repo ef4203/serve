@@ -28,4 +28,7 @@ typedef struct __request_t
 /* Parse the HTTP request from the raw request data. */
 extern HTTPREQ http_parse_request(char *__request);
 
+extern void send_response(const int __socket, const int __http_status_code, char **__body);
+
+extern void serve_files(const int __socket, const char *__path);
 #endif /* SERVE_HTTP_H */

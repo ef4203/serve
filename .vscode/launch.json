@@ -6,7 +6,7 @@
         "name": "Debug Program",
         "cwd": "${workspaceRoot}",
         "preLaunchTask": "Build",
-        "target": "./bin/clyth",
+        "target": "./bin/serve",
         "valuesFormatting": "prettyPrinters"
     }]
 }

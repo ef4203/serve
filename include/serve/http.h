@@ -2,8 +2,8 @@
 
 /* Provides functions for working with the HTTP standard. */
 
-#ifndef CLYTH_HTTP_H
-#define CLYTH_HTTP_H
+#ifndef SERVE_HTTP_H
+#define SERVE_HTTP_H
 
 /* Define the HTTP method type. */
 typedef int HTTPMETHOD;
@@ -28,4 +28,4 @@ typedef struct __request_t
 /* Parse the HTTP request from the raw request data. */
 extern HTTPREQ http_parse_request(char *__request);
 
-#endif /* CLYTH_HTTP_H */
+#endif /* SERVE_HTTP_H */

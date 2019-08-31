@@ -2,10 +2,21 @@
 
 /* Provides functions for working with the HTTP standard. */
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN 1
+
+#include <winsock2.h>
+#include <windows.h>
+
+#else
+
 #include <unistd.h>
+#include <netinet/in.h>
+
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <netinet/in.h>
 #include <stdex/string.h>
 #include <stdex/int.h>
 #include <serve/http.h>

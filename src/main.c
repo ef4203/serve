@@ -1,7 +1,20 @@
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN 1
+
+#include <winsock2.h>
+#include <windows.h>
+typedef int* socklen_t;
+
+#else
+
 #include <netinet/in.h>
+#include <unistd.h>
+typedef int SOCKET;
+
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #include <stdex/string.h>
 #include <stdex/int.h>
@@ -9,9 +22,15 @@
 
 int main()
 {
-    int create_socket, new_socket;
+    SOCKET create_socket, new_socket;
     socklen_t addrlen;
+#ifdef _WIN32
+	char opt[128] = { 0 };
+#else
     int opt = 1;
+
+#endif
+
     int bufsize = 1024;
     char *request = malloc(bufsize);
     struct sockaddr_in address;
@@ -22,7 +41,7 @@ int main()
     }
 
     // Forcefully attaching socket to the port 8080
-    if (setsockopt(create_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
+    if (setsockopt(create_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
     {
         perror("setsockopt");
         exit(EXIT_FAILURE);
@@ -35,7 +54,11 @@ int main()
     if (bind(create_socket, (struct sockaddr *)&address, sizeof(address)))
     {
         fprintf(stderr, "Error binding socket\n");
+#ifdef _WIN32
+		closesocket(create_socket);
+#else
         close(create_socket);
+#endif
         return EXIT_FAILURE;
     }
 
@@ -69,12 +92,19 @@ int main()
         default:
             break;
         }
-
+#ifdef _WIN32
+		closesocket(new_socket);
+#else
         close(new_socket);
+#endif
     }
 
     free(request);
-    close(create_socket);
+#ifdef _WIN32
+	closesocket(create_socket);
+#else
+	close(create_socket);
+#endif
 
     return EXIT_SUCCESS;
 }
